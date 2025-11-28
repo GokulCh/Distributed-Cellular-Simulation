@@ -3,8 +3,10 @@ from src.grid import Grid
 from src.load_balancer import LoadBalancer
 from tests.mocks import MockComm, MPI
 
+
 class MockCommunicatorWrapper:
     """Wrapper for MockComm to match Communicator interface."""
+
     def __init__(self):
         self.comm = MockComm()
         self.rank = 0
@@ -12,8 +14,10 @@ class MockCommunicatorWrapper:
         self.up = MPI.PROC_NULL
         self.down = MPI.PROC_NULL
 
+
 class TestLoadBalancer(unittest.TestCase):
     """Test the load balancer."""
+
     def setUp(self):
         self.comm = MockCommunicatorWrapper()
         self.balancer = LoadBalancer(self.comm)
@@ -31,5 +35,6 @@ class TestLoadBalancer(unittest.TestCase):
         changed = self.balancer.redistribute(self.grid)
         self.assertFalse(changed)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

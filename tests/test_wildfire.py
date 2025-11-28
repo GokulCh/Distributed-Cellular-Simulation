@@ -3,9 +3,10 @@ from src.grid import Grid
 from src.wildfire import update_grid
 from src.config import FUEL, BURNING, BURNT
 
+
 class TestWildfire(unittest.TestCase):
     """Test the wildfire simulation."""
-    
+
     def setUp(self):
         """Set up the test environment."""
         self.grid = Grid(10, 10)
@@ -20,9 +21,9 @@ class TestWildfire(unittest.TestCase):
         """Test that fire spreads to neighbors."""
         self.grid.set_fire(5, 5)
         new_data = update_grid(self.grid)
-        
-        neighbors = [(4,5), (6,5), (5,4), (5,6)]
-        
+
+        neighbors = [(4, 5), (6, 5), (5, 4), (5, 6)]
+
         for r, c in neighbors:
             state = new_data[r, c]
             self.assertIn(state, [FUEL, BURNING])
@@ -34,5 +35,6 @@ class TestWildfire(unittest.TestCase):
         new_data = update_grid(self.grid)
         self.assertEqual(new_data[5, 5], BURNT)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()
