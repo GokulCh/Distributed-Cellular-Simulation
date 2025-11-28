@@ -9,7 +9,7 @@ from src.load_balancer import LoadBalancer
 from src.config import BURNING
 
 def main():
-"""Main function to run the distributed wildfire simulation."""
+    """Main function to run the distributed wildfire simulation."""
 
     # Parse command line arguments
     parser = argparse.ArgumentParser(description='Distributed Wildfire Simulation')
