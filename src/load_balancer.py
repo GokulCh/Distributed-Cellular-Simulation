@@ -19,28 +19,28 @@ class LoadBalancer:
             return False
 
         self.comm.Barrier() 
-
         local_load = int(self.check_imbalance(grid))
         
         TAG_LOAD = 10
-        
         load_up = 0
-        if self.comm_obj.up != MPI.PROC_NULL:
-            load_up = self.comm.sendrecv(local_load, dest=self.comm_obj.up, source=self.comm_obj.up, sendtag=TAG_LOAD, recvtag=TAG_LOAD)
-            
         load_down = 0
+        changed = False
+        
+        # Send and receive load information
+        if self.comm_obj.up != MPI.PROC_NULL:
+            load_up = self.comm.sendrecv(local_load, dest=self.comm_obj.up, source=self.comm_obj.up, sendtag=TAG_LOAD, recvtag=TAG_LOAD)            
         if self.comm_obj.down != MPI.PROC_NULL:
             load_down = self.comm.sendrecv(local_load, dest=self.comm_obj.down, source=self.comm_obj.down, sendtag=TAG_LOAD, recvtag=TAG_LOAD)
         
-        changed = False
-        
+        # Balance pair
         if self.rank % 2 == 0 and self.comm_obj.down != MPI.PROC_NULL:
             self._balance_pair(grid, self.comm_obj.down)
         elif self.rank % 2 == 1 and self.comm_obj.up != MPI.PROC_NULL:
             self._balance_pair_passive(grid, self.comm_obj.up)
-            
+
         self.comm.Barrier()
         
+        # Balance 
         if self.rank % 2 == 1 and self.comm_obj.down != MPI.PROC_NULL:
             self._balance_pair(grid, self.comm_obj.down)
         elif self.rank % 2 == 0 and self.rank != 0 and self.comm_obj.up != MPI.PROC_NULL:
@@ -52,13 +52,11 @@ class LoadBalancer:
         my_load = int(self.check_imbalance(grid))
         
         TAG_BAL = 11
-        self.comm.send(my_load, dest=other_rank, tag=TAG_BAL)
-        
-        other_load = self.comm.recv(source=other_rank, tag=TAG_BAL)
-        
         THRESHOLD = 5
-        
         TAG_CMD = 12
+        
+        self.comm.send(my_load, dest=other_rank, tag=TAG_BAL)
+        other_load = self.comm.recv(source=other_rank, tag=TAG_BAL)
         
         if my_load > other_load + THRESHOLD and grid.rows > 2:
             self.comm.send(1, dest=other_rank, tag=TAG_CMD)
@@ -81,14 +79,14 @@ class LoadBalancer:
             self.comm.send(0, dest=other_rank, tag=TAG_CMD)
 
     def _balance_pair_passive(self, grid, other_rank):
-        my_load = int(self.check_imbalance(grid))   
-        
         TAG_BAL = 11
+        TAG_CMD = 12
+
+        my_load = int(self.check_imbalance(grid))       
         other_load = self.comm.recv(source=other_rank, tag=TAG_BAL)
-        
+
         self.comm.send(my_load, dest=other_rank, tag=TAG_BAL)
         
-        TAG_CMD = 12
         command = self.comm.recv(source=other_rank, tag=TAG_CMD)
         
         if command == 1:

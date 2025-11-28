@@ -15,31 +15,29 @@ class Communicator:
         if self.size == 1:
             return []
 
+        # Ghost exchange data
         requests = []
-        
         send_up = grid.data[0, :].copy()
         send_down = grid.data[-1, :].copy()
         
+        # Create receive buffers
         self.recv_up_buf = np.empty_like(send_up)
         self.recv_down_buf = np.empty_like(send_down)
         
         TAG_UP = 1
         TAG_DOWN = 2
         
+        # Send and receive ghost data
         if self.up != MPI.PROC_NULL:
             req_s_up = self.comm.Isend(send_up, dest=self.up, tag=TAG_DOWN)
             requests.append(req_s_up)
-            
             req_r_up = self.comm.Irecv(self.recv_up_buf, source=self.up, tag=TAG_UP)
             requests.append(req_r_up)
-            
         if self.down != MPI.PROC_NULL:
             req_s_down = self.comm.Isend(send_down, dest=self.down, tag=TAG_UP)
             requests.append(req_s_down)
-            
             req_r_down = self.comm.Irecv(self.recv_down_buf, source=self.down, tag=TAG_DOWN)
             requests.append(req_r_down)
-            
         return requests
 
     def end_ghost_exchange(self, grid, requests):
@@ -47,21 +45,22 @@ class Communicator:
         if self.size == 1:
             return
 
+        # Wait for ghost exchange to complete
         if requests:
             MPI.Request.Waitall(requests)
-            
+
+        # Update ghost data
         if self.up != MPI.PROC_NULL:
             grid.data_with_ghost[0, :] = self.recv_up_buf
-            
         if self.down != MPI.PROC_NULL:
             grid.data_with_ghost[-1, :] = self.recv_down_buf
 
     def gather_grid(self, grid):
         local_rows = grid.rows
         all_rows = self.comm.gather(local_rows, root=0)
-        
         local_data = grid.data
-        
+
+        # Gather grid data
         if self.rank == 0:
             total_rows = sum(all_rows)
             full_grid = np.empty((total_rows, grid.cols), dtype=np.int8)
