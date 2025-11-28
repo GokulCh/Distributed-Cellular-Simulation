@@ -1,5 +1,4 @@
 class MockMPI:
-    """Mock MPI class for testing."""
     COMM_WORLD = None 
     PROC_NULL = -2
     SUM = lambda x, y: x + y
@@ -11,7 +10,6 @@ class MockMPI:
 MPI = MockMPI()
 
 class MockComm:
-    """Mock MPI communicator for testing."""
     def __init__(self):
         self.rank = 0
         self.size = 1

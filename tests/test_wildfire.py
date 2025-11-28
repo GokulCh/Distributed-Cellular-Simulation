@@ -4,20 +4,16 @@ from src.wildfire import update_grid
 from src.config import FUEL, BURNING, BURNT
 
 class TestWildfire(unittest.TestCase):
-    """Test the wildfire simulation."""
     
     def setUp(self):
-        """Set up the test environment."""
         self.grid = Grid(10, 10)
 
     def test_burning_to_burnt(self):
-        """Test that burning cells turn into burnt cells."""
         self.grid.set_fire(5, 5)
         new_data = update_grid(self.grid)
         self.assertEqual(new_data[5, 5], BURNT)
 
     def test_propagation(self):
-        """Test that fire spreads to neighbors."""
         self.grid.set_fire(5, 5)
         new_data = update_grid(self.grid)
         
@@ -28,7 +24,6 @@ class TestWildfire(unittest.TestCase):
             self.assertIn(state, [FUEL, BURNING])
 
     def test_burnt_stays_burnt(self):
-        """Test that burnt cells do not reignite."""
         self.grid.data[5, 5] = BURNT
         self.grid.update_from_ghost()
         new_data = update_grid(self.grid)
