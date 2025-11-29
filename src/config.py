@@ -10,3 +10,13 @@ COLOR_MAP = {
     BURNING: [1, 0, 0],   
     BURNT: [0, 0, 0]      
 }
+
+# MPI Tags
+TAG_UP = 1
+TAG_DOWN = 2
+TAG_LOAD = 10
+TAG_BAL = 11
+TAG_CMD = 12
+
+# Load Balancing
+LB_THRESHOLD = 5

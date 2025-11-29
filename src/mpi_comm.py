@@ -1,5 +1,6 @@
 from mpi4py import MPI
 import numpy as np
+from src.config import TAG_UP, TAG_DOWN
 
 class Communicator:
 
@@ -24,8 +25,10 @@ class Communicator:
         self.recv_up_buf = np.empty_like(send_up)
         self.recv_down_buf = np.empty_like(send_down)
         
-        TAG_UP = 1
-        TAG_DOWN = 2
+        # Handle 0-row case
+        if grid.rows == 0:
+            send_up = np.zeros(grid.cols, dtype=np.int8)
+            send_down = np.zeros(grid.cols, dtype=np.int8)
         
         # Send and receive ghost data
         if self.up != MPI.PROC_NULL:

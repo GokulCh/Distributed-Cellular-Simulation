@@ -1,5 +1,5 @@
 import numpy as np
-from src.config import FUEL, BURNING, BURNT, P_SPREAD
+from src.config import FUEL, BURNING, BURNT, P_SPREAD, P_IGNITE
 
 def update_grid(grid_obj):
     current_state = grid_obj.data_with_ghost
@@ -23,6 +23,10 @@ def update_grid(grid_obj):
     random_vals = np.random.random((rows, cols))
     ignition_prob = 1 - (1 - P_SPREAD) ** burning_neighbors
     ignite_mask = (random_vals < ignition_prob) & fuel_mask
+    
+    # Spontaneous ignition
+    ignite_mask |= (random_vals < P_IGNITE) & fuel_mask
+    
     next_state[ignite_mask] = BURNING
     
     return next_state

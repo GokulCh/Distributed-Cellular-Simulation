@@ -18,7 +18,11 @@ def main():
     parser.add_argument('--procs', type=int, default=1, help='Number of processes (ignored, set by mpiexec)')
     parser.add_argument('--save', action='store_true', help='Save grid snapshots for visualization')
     parser.add_argument('--fire-pos', choices=['center', 'top'], default='center', help='Initial fire position')
+    parser.add_argument('--seed', type=int, default=None, help='Random seed for reproducibility')
     args = parser.parse_args()
+    
+    if args.seed is not None:
+        np.random.seed(args.seed)
 
     if args.save:
         if not os.path.exists("results/logs"):
@@ -35,7 +39,10 @@ def main():
     remainder = total_rows % size
     local_rows = rows_per_rank + (1 if rank < remainder else 0)
     grid = Grid(local_rows, args.cols)
-    offset = sum([rows_per_rank + (1 if r < remainder else 0) for r in range(rank)])
+    grid = Grid(local_rows, args.cols)
+    
+    # Optimized offset calculation
+    offset = rank * rows_per_rank + min(rank, remainder)
     
     # Set the initial fire position
     if args.fire_pos == 'center':

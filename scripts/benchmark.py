@@ -6,7 +6,7 @@ import os
 def run_benchmark(procs, steps=100, size=1000, balance=False):
     
     try:
-        cmd = [r"C:\Program Files\Microsoft MPI\Bin\mpiexec.exe", "-n", str(procs), "python", "main.py", 
+        cmd = ["mpiexec", "-n", str(procs), "python", "main.py", 
            "--rows", str(size), "--cols", str(size), 
            "--steps", str(steps), "--fire-pos", "top"]
            
