@@ -17,7 +17,8 @@ def main():
     parser.add_argument('--balance', action='store_true', help='Enable dynamic load balancing')
     parser.add_argument('--procs', type=int, default=1, help='Number of processes (ignored, set by mpiexec)')
     parser.add_argument('--save', action='store_true', help='Save grid snapshots for visualization')
-    parser.add_argument('--fire-pos', choices=['center', 'top'], default='center', help='Initial fire position')
+    parser.add_argument('--fire-pos', choices=['center', 'top', 'bottom', 'left', 'right'], default='center', help='Initial fire position')
+    parser.add_argument('--heavy', action='store_true', help='Simulate heavy computation per active cell')
     parser.add_argument('--seed', type=int, default=None, help='Random seed for reproducibility')
     args = parser.parse_args()
     
@@ -53,6 +54,20 @@ def main():
     elif args.fire_pos == 'top':
         if offset == 0 and local_rows > 0:
             grid.set_fire(0, args.cols // 2)
+    elif args.fire_pos == 'bottom':
+        # The last row of the global grid
+        if offset + local_rows == total_rows:
+            grid.set_fire(local_rows - 1, args.cols // 2)
+    elif args.fire_pos == 'left':
+        global_center_r = total_rows // 2
+        if offset <= global_center_r < offset + local_rows:
+            local_r = global_center_r - offset
+            grid.set_fire(local_r, 0)
+    elif args.fire_pos == 'right':
+        global_center_r = total_rows // 2
+        if offset <= global_center_r < offset + local_rows:
+            local_r = global_center_r - offset
+            grid.set_fire(local_r, args.cols - 1)
     
     # Set up the load balancer
     balancer = LoadBalancer(comm_obj) if args.balance else None
@@ -63,7 +78,7 @@ def main():
     for step in range(args.steps):
         requests = comm_obj.start_ghost_exchange(grid)
         comm_obj.end_ghost_exchange(grid, requests)
-        new_data = update_grid(grid)
+        new_data = update_grid(grid, heavy_load=args.heavy)
         grid.commit_updates(new_data)
         
         # Balance the load

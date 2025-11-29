@@ -1,7 +1,8 @@
 import numpy as np
+import time
 from src.config import FUEL, BURNING, BURNT, P_SPREAD, P_IGNITE
 
-def update_grid(grid_obj):
+def update_grid(grid_obj, heavy_load=False):
     current_state = grid_obj.data_with_ghost
 
     rows, cols = grid_obj.rows, grid_obj.cols
@@ -29,4 +30,11 @@ def update_grid(grid_obj):
     
     next_state[ignite_mask] = BURNING
     
+    if heavy_load:
+        num_burning = np.sum(burning_mask) + np.sum(ignite_mask)
+        if num_burning > 0:
+            target = time.time() + (num_burning * 0.00001) 
+            while time.time() < target:
+                pass
+
     return next_state

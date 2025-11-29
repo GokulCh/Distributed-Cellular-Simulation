@@ -1,0 +1,68 @@
+[
+    {
+        "name": "Small",
+        "config": {
+            "name": "Small",
+            "rows": 100,
+            "cols": 100,
+            "steps": 50,
+            "procs": 2,
+            "fire_pos": "center"
+        },
+        "time_static": 0.1376326084136963,
+        "time_dynamic": 0.13426995277404785
+    },
+    {
+        "name": "Medium",
+        "config": {
+            "name": "Medium",
+            "rows": 500,
+            "cols": 500,
+            "steps": 100,
+            "procs": 4,
+            "fire_pos": "center"
+        },
+        "time_static": 0.2793092727661133,
+        "time_dynamic": 0.2943723201751709
+    },
+    {
+        "name": "Large",
+        "config": {
+            "name": "Large",
+            "rows": 1000,
+            "cols": 1000,
+            "steps": 200,
+            "procs": 4,
+            "fire_pos": "center"
+        },
+        "time_static": 1.4710628986358643,
+        "time_dynamic": 1.5782060623168945
+    },
+    {
+        "name": "Uneven_Top",
+        "config": {
+            "name": "Uneven_Top",
+            "rows": 1000,
+            "cols": 1000,
+            "steps": 200,
+            "procs": 4,
+            "fire_pos": "top"
+        },
+        "time_static": 1.472618579864502,
+        "time_dynamic": 1.47251558303833
+    },
+    {
+        "name": "Heavy_Uneven",
+        "config": {
+            "name": "Heavy_Uneven",
+            "rows": 1000,
+            "cols": 1000,
+            "steps": 200,
+            "procs": 4,
+            "fire_pos": "top",
+            "heavy": true
+        },
+        "time_static": 6.838056325912476,
+        "time_dynamic": 7.253341436386108
+    }
+]
