@@ -18,17 +18,17 @@ class Communicator:
 
         # Ghost exchange data
         requests = []
-        send_up = grid.data[0, :].copy()
-        send_down = grid.data[-1, :].copy()
-        
-        # Create receive buffers
-        self.recv_up_buf = np.empty_like(send_up)
-        self.recv_down_buf = np.empty_like(send_down)
-        
         # Handle 0-row case
         if grid.rows == 0:
             send_up = np.zeros(grid.cols, dtype=np.int8)
             send_down = np.zeros(grid.cols, dtype=np.int8)
+        else:
+            send_up = grid.data[0, :].copy()
+            send_down = grid.data[-1, :].copy()
+        
+        # Create receive buffers
+        self.recv_up_buf = np.empty_like(send_up)
+        self.recv_down_buf = np.empty_like(send_down)
         
         # Send and receive ghost data
         if self.up != MPI.PROC_NULL:
