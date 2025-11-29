@@ -15,6 +15,7 @@ def main():
     parser.add_argument('--cols', type=int, default=100, help='Total cols')
     parser.add_argument('--steps', type=int, default=100, help='Simulation steps')
     parser.add_argument('--balance', action='store_true', help='Enable dynamic load balancing')
+    parser.add_argument('--balance-freq', type=int, default=10, help='Frequency of load balancing (steps)')
     parser.add_argument('--procs', type=int, default=1, help='Number of processes (ignored, set by mpiexec)')
     parser.add_argument('--save', action='store_true', help='Save grid snapshots for visualization')
     parser.add_argument('--fire-pos', choices=['center', 'top', 'bottom', 'left', 'right'], default='center', help='Initial fire position')
@@ -82,7 +83,7 @@ def main():
         grid.commit_updates(new_data)
         
         # Balance the load
-        if args.balance and step % 5 == 0:
+        if args.balance and step % args.balance_freq == 0:
             balancer.redistribute(grid)
         
         if step % 10 == 0:

@@ -9,17 +9,19 @@ EXPERIMENTS = [
     {"name": "Medium", "rows": 500, "cols": 500, "steps": 100, "procs": 4, "fire_pos": "center"},
     {"name": "Large", "rows": 1000, "cols": 1000, "steps": 200, "procs": 4, "fire_pos": "center"},
     {"name": "Uneven_Top", "rows": 1000, "cols": 1000, "steps": 200, "procs": 4, "fire_pos": "top"},
-    {"name": "Heavy_Uneven", "rows": 1000, "cols": 1000, "steps": 200, "procs": 4, "fire_pos": "top", "heavy": True}
+    {"name": "Heavy_Uneven", "rows": 1000, "cols": 1000, "steps": 200, "procs": 4, "fire_pos": "top", "heavy": True},
+    {"name": "Super_Heavy_Optimized", "rows": 1000, "cols": 1000, "steps": 200, "procs": 4, "fire_pos": "top", "heavy": True, "balance_freq": 20}
 ]
 
 RESULTS_FILE = "results/experiment_results.json"
 
-def run_simulation(name, rows, cols, steps, procs, fire_pos, heavy=False, balance=True):
-    print(f"Running {name} experiment ({rows}x{cols}, {steps} steps, {procs} procs, Pos={fire_pos}, Heavy={heavy}, Balance={balance})...")
+def run_simulation(name, rows, cols, steps, procs, fire_pos, heavy=False, balance_freq=10, balance=True):
+    print(f"Running {name} experiment ({rows}x{cols}, {steps} steps, {procs} procs, Pos={fire_pos}, Heavy={heavy}, Freq={balance_freq}, Balance={balance})...")
     cmd = [
         "mpiexec", "-n", str(procs), "python", "main.py",
         "--rows", str(rows), "--cols", str(cols),
-        "--steps", str(steps), "--fire-pos", fire_pos
+        "--steps", str(steps), "--fire-pos", fire_pos,
+        "--balance-freq", str(balance_freq)
     ]
     if heavy:
         cmd.append("--heavy")
@@ -50,11 +52,12 @@ def main():
 
     for exp in EXPERIMENTS:
         heavy = exp.get("heavy", False)
+        freq = exp.get("balance_freq", 10)
         # Run Static
-        time_static = run_simulation(exp["name"], exp["rows"], exp["cols"], exp["steps"], exp["procs"], exp["fire_pos"], heavy=heavy, balance=False)
+        time_static = run_simulation(exp["name"], exp["rows"], exp["cols"], exp["steps"], exp["procs"], exp["fire_pos"], heavy=heavy, balance_freq=freq, balance=False)
         
         # Run Dynamic
-        time_dynamic = run_simulation(exp["name"], exp["rows"], exp["cols"], exp["steps"], exp["procs"], exp["fire_pos"], heavy=heavy, balance=True)
+        time_dynamic = run_simulation(exp["name"], exp["rows"], exp["cols"], exp["steps"], exp["procs"], exp["fire_pos"], heavy=heavy, balance_freq=freq, balance=True)
         
         results.append({
             "name": exp["name"],

@@ -9,8 +9,8 @@
             "procs": 2,
             "fire_pos": "center"
         },
-        "time_static": 0.1376326084136963,
-        "time_dynamic": 0.13426995277404785
+        "time_static": 0.14879584312438965,
+        "time_dynamic": 0.1403036117553711
     },
     {
         "name": "Medium",
@@ -22,8 +22,8 @@
             "procs": 4,
             "fire_pos": "center"
         },
-        "time_static": 0.2793092727661133,
-        "time_dynamic": 0.2943723201751709
+        "time_static": 0.27317166328430176,
+        "time_dynamic": 0.2782766819000244
     },
     {
         "name": "Large",
@@ -35,8 +35,8 @@
             "procs": 4,
             "fire_pos": "center"
         },
-        "time_static": 1.4710628986358643,
-        "time_dynamic": 1.5782060623168945
+        "time_static": 1.4971427917480469,
+        "time_dynamic": 1.5753133296966553
     },
     {
         "name": "Uneven_Top",
@@ -48,8 +48,8 @@
             "procs": 4,
             "fire_pos": "top"
         },
-        "time_static": 1.472618579864502,
-        "time_dynamic": 1.47251558303833
+        "time_static": 1.5013320446014404,
+        "time_dynamic": 1.5199902057647705
     },
     {
         "name": "Heavy_Uneven",
@@ -62,7 +62,22 @@
             "fire_pos": "top",
             "heavy": true
         },
-        "time_static": 6.838056325912476,
-        "time_dynamic": 7.253341436386108
+        "time_static": 26.908788681030273,
+        "time_dynamic": 26.93430233001709
+    },
+    {
+        "name": "Super_Heavy_Optimized",
+        "config": {
+            "name": "Super_Heavy_Optimized",
+            "rows": 1000,
+            "cols": 1000,
+            "steps": 200,
+            "procs": 4,
+            "fire_pos": "top",
+            "heavy": true,
+            "balance_freq": 20
+        },
+        "time_static": 26.864607334136963,
+        "time_dynamic": 27.08334970474243
     }
 ]
