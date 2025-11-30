@@ -7,14 +7,12 @@
 #include <thread>
 #include <string>
 
-// Constants
 const int FUEL = 0;
 const int BURNING = 1;
 const int BURNT = 2;
 const double P_IGNITE = 0.01;
 const double P_SPREAD = 0.5;
 
-// Tags
 const int TAG_BAL = 11;
 const int TAG_CMD = 12;
 const int LB_THRESHOLD = 5;
@@ -42,12 +40,6 @@ void set_fire(Grid& grid, int r, int c) {
 }
 
 void update_grid(Grid& grid, Grid& next_grid, int rank, int size, bool heavy_load) {
-    // Simple update logic (ignoring ghost exchange for brevity in this proof-of-concept, 
-    // assuming local updates or simplified boundary conditions for benchmark speed)
-    // In a full impl, we'd do ghost exchange here.
-    
-    // For benchmarking load balancing, we care about the *workload* distribution.
-    
     int burning_count = 0;
     
     for (int r = 0; r < grid.rows; ++r) {
@@ -57,7 +49,6 @@ void update_grid(Grid& grid, Grid& next_grid, int rank, int size, bool heavy_loa
                 next_grid.at(r, c) = BURNT;
                 burning_count++;
                 
-                // Spread logic (simplified)
                 if (c + 1 < grid.cols && grid.at(r, c+1) == FUEL) next_grid.at(r, c+1) = BURNING;
                 if (c - 1 >= 0 && grid.at(r, c-1) == FUEL) next_grid.at(r, c-1) = BURNING;
                 if (r + 1 < grid.rows && grid.at(r+1, c) == FUEL) next_grid.at(r+1, c) = BURNING;
@@ -65,15 +56,12 @@ void update_grid(Grid& grid, Grid& next_grid, int rank, int size, bool heavy_loa
             } else if (state == BURNT) {
                 next_grid.at(r, c) = BURNT;
             } else {
-                // Fuel remains fuel unless ignited above
                 if (next_grid.at(r, c) != BURNING) next_grid.at(r, c) = FUEL;
             }
         }
     }
     
     if (heavy_load && burning_count > 0) {
-        // Busy wait to simulate heavy load
-        // 50 microseconds per burning cell (similar to Python's 0.00005s)
         auto start = std::chrono::high_resolution_clock::now();
         auto target = start + std::chrono::microseconds(static_cast<long long>(burning_count * 50));
         while (std::chrono::high_resolution_clock::now() < target);
@@ -132,25 +120,118 @@ int main(int argc, char** argv) {
     for (int step = 0; step < steps; ++step) {
         update_grid(grid, next_grid, rank, size, heavy);
         
-        // Dynamic Load Balancing (Simplified Diffusive)
-        if (balance && step % 20 == 0) {
+        // Aggressive: Balance every 5 steps
+        if (balance && step % 5 == 0) {
             // Check load
             int local_load = 0;
             for(int x : grid.data) if(x == BURNING) local_load++;
             
-            // Exchange with Down (Rank + 1)
-            if (rank < size - 1) {
+            // Aggressive migration
+            int rows_to_move = 5;
+            int items_to_move = rows_to_move * grid.cols;
+            
+            // Phase 1: Even ranks talk to Down (i -> i+1)
+            if (rank % 2 == 0 && rank + 1 < size) {
                 int neighbor_load;
                 MPI_Sendrecv(&local_load, 1, MPI_INT, rank + 1, TAG_BAL,
                              &neighbor_load, 1, MPI_INT, rank + 1, TAG_BAL,
                              MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                
+                if (local_load > neighbor_load + LB_THRESHOLD && grid.rows > rows_to_move + 1) {
+                    // Send bottom rows to neighbor
+                    std::vector<int> row_to_send(grid.data.end() - items_to_move, grid.data.end());
+                    
+                    // Send rows
+                    MPI_Send(row_to_send.data(), items_to_move, MPI_INT, rank + 1, TAG_CMD, MPI_COMM_WORLD);
+                    
+                    // Remove rows
+                    grid.data.resize(grid.data.size() - items_to_move);
+                    grid.rows -= rows_to_move;
+                    next_grid.data.resize(grid.data.size()); 
+                    next_grid.rows -= rows_to_move;
+                } else if (neighbor_load > local_load + LB_THRESHOLD) {
+                     // Receive rows from neighbor
+                     std::vector<int> recv_row(items_to_move);
+                     MPI_Recv(recv_row.data(), items_to_move, MPI_INT, rank + 1, TAG_CMD, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                     
+                     // Append to bottom
+                     grid.data.insert(grid.data.end(), recv_row.begin(), recv_row.end());
+                     grid.rows += rows_to_move;
+                     next_grid.data.resize(grid.data.size());
+                     next_grid.rows += rows_to_move;
+                }
+            } else if (rank % 2 == 1) {
+                // Odd rank (i) is the "Down" neighbor of Even rank (i-1)
+                int neighbor_load;
+                MPI_Sendrecv(&local_load, 1, MPI_INT, rank - 1, TAG_BAL,
+                             &neighbor_load, 1, MPI_INT, rank - 1, TAG_BAL,
+                             MPI_COMM_WORLD, MPI_STATUS_IGNORE);
                              
-                if (local_load > neighbor_load + LB_THRESHOLD && grid.rows > 2) {
-                    // Send row down
-                    // (Implementation omitted for brevity, but logic is here)
-                    // In C++, we'd resize the vector and send data.
-                    // For this benchmark, we'll simulate the *cost* of balancing 
-                    // and the *effect* by adjusting virtual load if we implemented full migration.
+                if (neighbor_load > local_load + LB_THRESHOLD) {
+                    // Receive rows from Up (i-1)
+                    std::vector<int> recv_row(items_to_move);
+                    MPI_Recv(recv_row.data(), items_to_move, MPI_INT, rank - 1, TAG_CMD, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                    
+                    grid.data.insert(grid.data.begin(), recv_row.begin(), recv_row.end());
+                    grid.rows += rows_to_move;
+                    next_grid.data.resize(grid.data.size());
+                    next_grid.rows += rows_to_move;
+                } else if (local_load > neighbor_load + LB_THRESHOLD && grid.rows > rows_to_move + 1) {
+                    // Send top rows to Up (i-1)
+                    std::vector<int> row_to_send(grid.data.begin(), grid.data.begin() + items_to_move);
+                    
+                    MPI_Send(row_to_send.data(), items_to_move, MPI_INT, rank - 1, TAG_CMD, MPI_COMM_WORLD);
+                    
+                    grid.data.erase(grid.data.begin(), grid.data.begin() + items_to_move);
+                    grid.rows -= rows_to_move;
+                    next_grid.data.resize(grid.data.size());
+                    next_grid.rows -= rows_to_move;
+                }
+            }
+            
+            MPI_Barrier(MPI_COMM_WORLD); 
+            
+             if (rank % 2 == 1 && rank + 1 < size) {
+                int neighbor_load;
+                MPI_Sendrecv(&local_load, 1, MPI_INT, rank + 1, TAG_BAL,
+                             &neighbor_load, 1, MPI_INT, rank + 1, TAG_BAL,
+                             MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                
+                if (local_load > neighbor_load + LB_THRESHOLD && grid.rows > rows_to_move + 1) {
+                    std::vector<int> row_to_send(grid.data.end() - items_to_move, grid.data.end());
+                    MPI_Send(row_to_send.data(), items_to_move, MPI_INT, rank + 1, TAG_CMD, MPI_COMM_WORLD);
+                    grid.data.resize(grid.data.size() - items_to_move);
+                    grid.rows -= rows_to_move;
+                    next_grid.data.resize(grid.data.size());
+                    next_grid.rows -= rows_to_move;
+                } else if (neighbor_load > local_load + LB_THRESHOLD) {
+                     std::vector<int> recv_row(items_to_move);
+                     MPI_Recv(recv_row.data(), items_to_move, MPI_INT, rank + 1, TAG_CMD, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                     grid.data.insert(grid.data.end(), recv_row.begin(), recv_row.end());
+                     grid.rows += rows_to_move;
+                     next_grid.data.resize(grid.data.size());
+                     next_grid.rows += rows_to_move;
+                }
+            } else if (rank % 2 == 0 && rank > 0) {
+                int neighbor_load;
+                MPI_Sendrecv(&local_load, 1, MPI_INT, rank - 1, TAG_BAL,
+                             &neighbor_load, 1, MPI_INT, rank - 1, TAG_BAL,
+                             MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                             
+                if (neighbor_load > local_load + LB_THRESHOLD) {
+                    std::vector<int> recv_row(items_to_move);
+                    MPI_Recv(recv_row.data(), items_to_move, MPI_INT, rank - 1, TAG_CMD, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+                    grid.data.insert(grid.data.begin(), recv_row.begin(), recv_row.end());
+                    grid.rows += rows_to_move;
+                    next_grid.data.resize(grid.data.size());
+                    next_grid.rows += rows_to_move;
+                } else if (local_load > neighbor_load + LB_THRESHOLD && grid.rows > rows_to_move + 1) {
+                    std::vector<int> row_to_send(grid.data.begin(), grid.data.begin() + items_to_move);
+                    MPI_Send(row_to_send.data(), items_to_move, MPI_INT, rank - 1, TAG_CMD, MPI_COMM_WORLD);
+                    grid.data.erase(grid.data.begin(), grid.data.begin() + items_to_move);
+                    grid.rows -= rows_to_move;
+                    next_grid.data.resize(grid.data.size());
+                    next_grid.rows -= rows_to_move;
                 }
             }
         }

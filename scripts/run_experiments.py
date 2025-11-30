@@ -10,23 +10,38 @@ EXPERIMENTS = [
     {"name": "Large", "rows": 1000, "cols": 1000, "steps": 200, "procs": 4, "fire_pos": "center"},
     {"name": "Uneven_Top", "rows": 1000, "cols": 1000, "steps": 200, "procs": 4, "fire_pos": "top"},
     {"name": "Heavy_Uneven", "rows": 1000, "cols": 1000, "steps": 200, "procs": 4, "fire_pos": "top", "heavy": True},
-    {"name": "Super_Heavy_Optimized", "rows": 1000, "cols": 1000, "steps": 200, "procs": 4, "fire_pos": "top", "heavy": True, "balance_freq": 20}
+    {"name": "Super_Heavy_Optimized", "rows": 1000, "cols": 1000, "steps": 200, "procs": 4, "fire_pos": "top", "heavy": True, "balance_freq": 20},
+    {"name": "CPP_Comparison", "rows": 1000, "cols": 1000, "steps": 200, "procs": 4, "fire_pos": "top", "heavy": True, "cpp": True},
+    {"name": "CPP_Center", "rows": 1000, "cols": 1000, "steps": 200, "procs": 4, "fire_pos": "center", "heavy": True, "cpp": True},
+    {"name": "Long_CPP", "rows": 1000, "cols": 1000, "steps": 500, "procs": 4, "fire_pos": "top", "heavy": True, "cpp": True}
 ]
 
 RESULTS_FILE = "results/experiment_results.json"
 
-def run_simulation(name, rows, cols, steps, procs, fire_pos, heavy=False, balance_freq=10, balance=True):
-    print(f"Running {name} experiment ({rows}x{cols}, {steps} steps, {procs} procs, Pos={fire_pos}, Heavy={heavy}, Freq={balance_freq}, Balance={balance})...")
-    cmd = [
-        "mpiexec", "-n", str(procs), "python", "main.py",
-        "--rows", str(rows), "--cols", str(cols),
-        "--steps", str(steps), "--fire-pos", fire_pos,
-        "--balance-freq", str(balance_freq)
-    ]
-    if heavy:
-        cmd.append("--heavy")
-    if balance:
-        cmd.append("--balance")
+def run_simulation(name, rows, cols, steps, procs, fire_pos, heavy=False, balance_freq=10, balance=True, cpp=False):
+    print(f"Running {name} experiment ({rows}x{cols}, {steps} steps, {procs} procs, Pos={fire_pos}, Heavy={heavy}, Freq={balance_freq}, Balance={balance}, CPP={cpp})...")
+    
+    if cpp:
+        cmd = [
+            "mpiexec", "-n", str(procs), "simulation.exe",
+            "--rows", str(rows), "--cols", str(cols),
+            "--steps", str(steps), "--fire-pos", fire_pos
+        ]
+        if balance:
+            cmd.append("--balance")
+        if heavy:
+            cmd.append("--heavy")
+    else:
+        cmd = [
+            "mpiexec", "-n", str(procs), "python", "main.py",
+            "--rows", str(rows), "--cols", str(cols),
+            "--steps", str(steps), "--fire-pos", fire_pos,
+            "--balance-freq", str(balance_freq)
+        ]
+        if heavy:
+            cmd.append("--heavy")
+        if balance:
+            cmd.append("--balance")
     
     # Save logs for the largest run to visualize later
     if name == "Large":
@@ -53,11 +68,13 @@ def main():
     for exp in EXPERIMENTS:
         heavy = exp.get("heavy", False)
         freq = exp.get("balance_freq", 10)
+        cpp = exp.get("cpp", False)
+        
         # Run Static
-        time_static = run_simulation(exp["name"], exp["rows"], exp["cols"], exp["steps"], exp["procs"], exp["fire_pos"], heavy=heavy, balance_freq=freq, balance=False)
+        time_static = run_simulation(exp["name"], exp["rows"], exp["cols"], exp["steps"], exp["procs"], exp["fire_pos"], heavy=heavy, balance_freq=freq, balance=False, cpp=cpp)
         
         # Run Dynamic
-        time_dynamic = run_simulation(exp["name"], exp["rows"], exp["cols"], exp["steps"], exp["procs"], exp["fire_pos"], heavy=heavy, balance_freq=freq, balance=True)
+        time_dynamic = run_simulation(exp["name"], exp["rows"], exp["cols"], exp["steps"], exp["procs"], exp["fire_pos"], heavy=heavy, balance_freq=freq, balance=True, cpp=cpp)
         
         results.append({
             "name": exp["name"],
