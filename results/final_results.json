@@ -1,0 +1,827 @@
+[
+    {
+        "name": "Cpp_Small_P2_center",
+        "config": {
+            "name": "Cpp_Small_P2_center",
+            "rows": 200,
+            "cols": 200,
+            "steps": 100,
+            "procs": 2,
+            "fire_pos": "center",
+            "heavy": true,
+            "cpp": true
+        },
+        "time_static": 0.5691688060760498,
+        "time_dynamic": 0.57391357421875
+    },
+    {
+        "name": "Cpp_Small_P2_top",
+        "config": {
+            "name": "Cpp_Small_P2_top",
+            "rows": 200,
+            "cols": 200,
+            "steps": 100,
+            "procs": 2,
+            "fire_pos": "top",
+            "heavy": true,
+            "cpp": true
+        },
+        "time_static": 0.536506175994873,
+        "time_dynamic": 0.466261625289917
+    },
+    {
+        "name": "Cpp_Small_P2_corner",
+        "config": {
+            "name": "Cpp_Small_P2_corner",
+            "rows": 200,
+            "cols": 200,
+            "steps": 100,
+            "procs": 2,
+            "fire_pos": "corner",
+            "heavy": true,
+            "cpp": true
+        },
+        "time_static": 0.2883470058441162,
+        "time_dynamic": 0.2534599304199219
+    },
+    {
+        "name": "Cpp_Small_P4_center",
+        "config": {
+            "name": "Cpp_Small_P4_center",
+            "rows": 200,
+            "cols": 200,
+            "steps": 100,
+            "procs": 4,
+            "fire_pos": "center",
+            "heavy": true,
+            "cpp": true
+        },
+        "time_static": 0.4157567024230957,
+        "time_dynamic": 0.5393929481506348
+    },
+    {
+        "name": "Cpp_Small_P4_top",
+        "config": {
+            "name": "Cpp_Small_P4_top",
+            "rows": 200,
+            "cols": 200,
+            "steps": 100,
+            "procs": 4,
+            "fire_pos": "top",
+            "heavy": true,
+            "cpp": true
+        },
+        "time_static": 0.4095938205718994,
+        "time_dynamic": 0.4208407402038574
+    },
+    {
+        "name": "Cpp_Small_P4_corner",
+        "config": {
+            "name": "Cpp_Small_P4_corner",
+            "rows": 200,
+            "cols": 200,
+            "steps": 100,
+            "procs": 4,
+            "fire_pos": "corner",
+            "heavy": true,
+            "cpp": true
+        },
+        "time_static": 0.22331023216247559,
+        "time_dynamic": 0.20866799354553223
+    },
+    {
+        "name": "Cpp_Small_P8_center",
+        "config": {
+            "name": "Cpp_Small_P8_center",
+            "rows": 200,
+            "cols": 200,
+            "steps": 100,
+            "procs": 8,
+            "fire_pos": "center",
+            "heavy": true,
+            "cpp": true
+        },
+        "time_static": 0.26787281036376953,
+        "time_dynamic": 0.39788341522216797
+    },
+    {
+        "name": "Cpp_Small_P8_top",
+        "config": {
+            "name": "Cpp_Small_P8_top",
+            "rows": 200,
+            "cols": 200,
+            "steps": 100,
+            "procs": 8,
+            "fire_pos": "top",
+            "heavy": true,
+            "cpp": true
+        },
+        "time_static": 0.2625730037689209,
+        "time_dynamic": 0.33328771591186523
+    },
+    {
+        "name": "Cpp_Small_P8_corner",
+        "config": {
+            "name": "Cpp_Small_P8_corner",
+            "rows": 200,
+            "cols": 200,
+            "steps": 100,
+            "procs": 8,
+            "fire_pos": "corner",
+            "heavy": true,
+            "cpp": true
+        },
+        "time_static": 0.15436387062072754,
+        "time_dynamic": 0.1944730281829834
+    },
+    {
+        "name": "Cpp_Medium_P2_center",
+        "config": {
+            "name": "Cpp_Medium_P2_center",
+            "rows": 500,
+            "cols": 500,
+            "steps": 150,
+            "procs": 2,
+            "fire_pos": "center",
+            "heavy": true,
+            "cpp": true
+        },
+        "time_static": 1.1764922142028809,
+        "time_dynamic": 1.2319741249084473
+    },
+    {
+        "name": "Cpp_Medium_P2_top",
+        "config": {
+            "name": "Cpp_Medium_P2_top",
+            "rows": 500,
+            "cols": 500,
+            "steps": 150,
+            "procs": 2,
+            "fire_pos": "top",
+            "heavy": true,
+            "cpp": true
+        },
+        "time_static": 1.179898977279663,
+        "time_dynamic": 1.1197116374969482
+    },
+    {
+        "name": "Cpp_Medium_P2_corner",
+        "config": {
+            "name": "Cpp_Medium_P2_corner",
+            "rows": 500,
+            "cols": 500,
+            "steps": 150,
+            "procs": 2,
+            "fire_pos": "corner",
+            "heavy": true,
+            "cpp": true
+        },
+        "time_static": 0.6147863864898682,
+        "time_dynamic": 0.5849168300628662
+    },
+    {
+        "name": "Cpp_Medium_P4_center",
+        "config": {
+            "name": "Cpp_Medium_P4_center",
+            "rows": 500,
+            "cols": 500,
+            "steps": 150,
+            "procs": 4,
+            "fire_pos": "center",
+            "heavy": true,
+            "cpp": true
+        },
+        "time_static": 1.135195255279541,
+        "time_dynamic": 1.3055877685546875
+    },
+    {
+        "name": "Cpp_Medium_P4_top",
+        "config": {
+            "name": "Cpp_Medium_P4_top",
+            "rows": 500,
+            "cols": 500,
+            "steps": 150,
+            "procs": 4,
+            "fire_pos": "top",
+            "heavy": true,
+            "cpp": true
+        },
+        "time_static": 1.1355443000793457,
+        "time_dynamic": 1.0809314250946045
+    },
+    {
+        "name": "Cpp_Medium_P4_corner",
+        "config": {
+            "name": "Cpp_Medium_P4_corner",
+            "rows": 500,
+            "cols": 500,
+            "steps": 150,
+            "procs": 4,
+            "fire_pos": "corner",
+            "heavy": true,
+            "cpp": true
+        },
+        "time_static": 0.5995137691497803,
+        "time_dynamic": 0.5501339435577393
+    },
+    {
+        "name": "Cpp_Medium_P8_center",
+        "config": {
+            "name": "Cpp_Medium_P8_center",
+            "rows": 500,
+            "cols": 500,
+            "steps": 150,
+            "procs": 8,
+            "fire_pos": "center",
+            "heavy": true,
+            "cpp": true
+        },
+        "time_static": 0.7994105815887451,
+        "time_dynamic": 0.9394590854644775
+    },
+    {
+        "name": "Cpp_Medium_P8_top",
+        "config": {
+            "name": "Cpp_Medium_P8_top",
+            "rows": 500,
+            "cols": 500,
+            "steps": 150,
+            "procs": 8,
+            "fire_pos": "top",
+            "heavy": true,
+            "cpp": true
+        },
+        "time_static": 0.7921197414398193,
+        "time_dynamic": 0.8100707530975342
+    },
+    {
+        "name": "Cpp_Medium_P8_corner",
+        "config": {
+            "name": "Cpp_Medium_P8_corner",
+            "rows": 500,
+            "cols": 500,
+            "steps": 150,
+            "procs": 8,
+            "fire_pos": "corner",
+            "heavy": true,
+            "cpp": true
+        },
+        "time_static": 0.42351651191711426,
+        "time_dynamic": 0.4135143756866455
+    },
+    {
+        "name": "Cpp_Large_P2_center",
+        "config": {
+            "name": "Cpp_Large_P2_center",
+            "rows": 1000,
+            "cols": 1000,
+            "steps": 200,
+            "procs": 2,
+            "fire_pos": "center",
+            "heavy": true,
+            "cpp": true
+        },
+        "time_static": 2.1246485710144043,
+        "time_dynamic": 2.2074594497680664
+    },
+    {
+        "name": "Cpp_Large_P2_top",
+        "config": {
+            "name": "Cpp_Large_P2_top",
+            "rows": 1000,
+            "cols": 1000,
+            "steps": 200,
+            "procs": 2,
+            "fire_pos": "top",
+            "heavy": true,
+            "cpp": true
+        },
+        "time_static": 2.122736930847168,
+        "time_dynamic": 2.1179587841033936
+    },
+    {
+        "name": "Cpp_Large_P2_corner",
+        "config": {
+            "name": "Cpp_Large_P2_corner",
+            "rows": 1000,
+            "cols": 1000,
+            "steps": 200,
+            "procs": 2,
+            "fire_pos": "corner",
+            "heavy": true,
+            "cpp": true
+        },
+        "time_static": 1.1225764751434326,
+        "time_dynamic": 1.1219027042388916
+    },
+    {
+        "name": "Cpp_Large_P4_center",
+        "config": {
+            "name": "Cpp_Large_P4_center",
+            "rows": 1000,
+            "cols": 1000,
+            "steps": 200,
+            "procs": 4,
+            "fire_pos": "center",
+            "heavy": true,
+            "cpp": true
+        },
+        "time_static": 2.0727052688598633,
+        "time_dynamic": 2.0316853523254395
+    },
+    {
+        "name": "Cpp_Large_P4_top",
+        "config": {
+            "name": "Cpp_Large_P4_top",
+            "rows": 1000,
+            "cols": 1000,
+            "steps": 200,
+            "procs": 4,
+            "fire_pos": "top",
+            "heavy": true,
+            "cpp": true
+        },
+        "time_static": 2.0786755084991455,
+        "time_dynamic": 1.7786602973937988
+    },
+    {
+        "name": "Cpp_Large_P4_corner",
+        "config": {
+            "name": "Cpp_Large_P4_corner",
+            "rows": 1000,
+            "cols": 1000,
+            "steps": 200,
+            "procs": 4,
+            "fire_pos": "corner",
+            "heavy": true,
+            "cpp": true
+        },
+        "time_static": 1.0839018821716309,
+        "time_dynamic": 0.93161940574646
+    },
+    {
+        "name": "Cpp_Large_P8_center",
+        "config": {
+            "name": "Cpp_Large_P8_center",
+            "rows": 1000,
+            "cols": 1000,
+            "steps": 200,
+            "procs": 8,
+            "fire_pos": "center",
+            "heavy": true,
+            "cpp": true
+        },
+        "time_static": 1.7781367301940918,
+        "time_dynamic": 1.9108760356903076
+    },
+    {
+        "name": "Cpp_Large_P8_top",
+        "config": {
+            "name": "Cpp_Large_P8_top",
+            "rows": 1000,
+            "cols": 1000,
+            "steps": 200,
+            "procs": 8,
+            "fire_pos": "top",
+            "heavy": true,
+            "cpp": true
+        },
+        "time_static": 1.7772159576416016,
+        "time_dynamic": 1.6103155612945557
+    },
+    {
+        "name": "Cpp_Large_P8_corner",
+        "config": {
+            "name": "Cpp_Large_P8_corner",
+            "rows": 1000,
+            "cols": 1000,
+            "steps": 200,
+            "procs": 8,
+            "fire_pos": "corner",
+            "heavy": true,
+            "cpp": true
+        },
+        "time_static": 0.9287950992584229,
+        "time_dynamic": 0.8180098533630371
+    },
+    {
+        "name": "Py_Small_P2_center",
+        "config": {
+            "name": "Py_Small_P2_center",
+            "rows": 200,
+            "cols": 200,
+            "steps": 100,
+            "procs": 2,
+            "fire_pos": "center",
+            "heavy": true,
+            "cpp": false
+        },
+        "time_static": 2.2436277866363525,
+        "time_dynamic": 2.239650249481201
+    },
+    {
+        "name": "Py_Small_P2_top",
+        "config": {
+            "name": "Py_Small_P2_top",
+            "rows": 200,
+            "cols": 200,
+            "steps": 100,
+            "procs": 2,
+            "fire_pos": "top",
+            "heavy": true,
+            "cpp": false
+        },
+        "time_static": 2.320819616317749,
+        "time_dynamic": 2.3649137020111084
+    },
+    {
+        "name": "Py_Small_P2_corner",
+        "config": {
+            "name": "Py_Small_P2_corner",
+            "rows": 200,
+            "cols": 200,
+            "steps": 100,
+            "procs": 2,
+            "fire_pos": "corner",
+            "heavy": true,
+            "cpp": false
+        },
+        "time_static": null,
+        "time_dynamic": null
+    },
+    {
+        "name": "Py_Small_P4_center",
+        "config": {
+            "name": "Py_Small_P4_center",
+            "rows": 200,
+            "cols": 200,
+            "steps": 100,
+            "procs": 4,
+            "fire_pos": "center",
+            "heavy": true,
+            "cpp": false
+        },
+        "time_static": 1.409649133682251,
+        "time_dynamic": 1.371636152267456
+    },
+    {
+        "name": "Py_Small_P4_top",
+        "config": {
+            "name": "Py_Small_P4_top",
+            "rows": 200,
+            "cols": 200,
+            "steps": 100,
+            "procs": 4,
+            "fire_pos": "top",
+            "heavy": true,
+            "cpp": false
+        },
+        "time_static": 1.4059879779815674,
+        "time_dynamic": 1.3733704090118408
+    },
+    {
+        "name": "Py_Small_P4_corner",
+        "config": {
+            "name": "Py_Small_P4_corner",
+            "rows": 200,
+            "cols": 200,
+            "steps": 100,
+            "procs": 4,
+            "fire_pos": "corner",
+            "heavy": true,
+            "cpp": false
+        },
+        "time_static": null,
+        "time_dynamic": null
+    },
+    {
+        "name": "Py_Small_P8_center",
+        "config": {
+            "name": "Py_Small_P8_center",
+            "rows": 200,
+            "cols": 200,
+            "steps": 100,
+            "procs": 8,
+            "fire_pos": "center",
+            "heavy": true,
+            "cpp": false
+        },
+        "time_static": 0.9799578189849854,
+        "time_dynamic": 0.9710981845855713
+    },
+    {
+        "name": "Py_Small_P8_top",
+        "config": {
+            "name": "Py_Small_P8_top",
+            "rows": 200,
+            "cols": 200,
+            "steps": 100,
+            "procs": 8,
+            "fire_pos": "top",
+            "heavy": true,
+            "cpp": false
+        },
+        "time_static": 0.9800350666046143,
+        "time_dynamic": 0.988832950592041
+    },
+    {
+        "name": "Py_Small_P8_corner",
+        "config": {
+            "name": "Py_Small_P8_corner",
+            "rows": 200,
+            "cols": 200,
+            "steps": 100,
+            "procs": 8,
+            "fire_pos": "corner",
+            "heavy": true,
+            "cpp": false
+        },
+        "time_static": null,
+        "time_dynamic": null
+    },
+    {
+        "name": "Py_Medium_P2_center",
+        "config": {
+            "name": "Py_Medium_P2_center",
+            "rows": 500,
+            "cols": 500,
+            "steps": 150,
+            "procs": 2,
+            "fire_pos": "center",
+            "heavy": true,
+            "cpp": false
+        },
+        "time_static": 13.38166618347168,
+        "time_dynamic": 13.214898586273193
+    },
+    {
+        "name": "Py_Medium_P2_top",
+        "config": {
+            "name": "Py_Medium_P2_top",
+            "rows": 500,
+            "cols": 500,
+            "steps": 150,
+            "procs": 2,
+            "fire_pos": "top",
+            "heavy": true,
+            "cpp": false
+        },
+        "time_static": 13.103545904159546,
+        "time_dynamic": 13.18246078491211
+    },
+    {
+        "name": "Py_Medium_P2_corner",
+        "config": {
+            "name": "Py_Medium_P2_corner",
+            "rows": 500,
+            "cols": 500,
+            "steps": 150,
+            "procs": 2,
+            "fire_pos": "corner",
+            "heavy": true,
+            "cpp": false
+        },
+        "time_static": null,
+        "time_dynamic": null
+    },
+    {
+        "name": "Py_Medium_P4_center",
+        "config": {
+            "name": "Py_Medium_P4_center",
+            "rows": 500,
+            "cols": 500,
+            "steps": 150,
+            "procs": 4,
+            "fire_pos": "center",
+            "heavy": true,
+            "cpp": false
+        },
+        "time_static": 6.889955043792725,
+        "time_dynamic": 6.889625549316406
+    },
+    {
+        "name": "Py_Medium_P4_top",
+        "config": {
+            "name": "Py_Medium_P4_top",
+            "rows": 500,
+            "cols": 500,
+            "steps": 150,
+            "procs": 4,
+            "fire_pos": "top",
+            "heavy": true,
+            "cpp": false
+        },
+        "time_static": 6.882967710494995,
+        "time_dynamic": 6.902220726013184
+    },
+    {
+        "name": "Py_Medium_P4_corner",
+        "config": {
+            "name": "Py_Medium_P4_corner",
+            "rows": 500,
+            "cols": 500,
+            "steps": 150,
+            "procs": 4,
+            "fire_pos": "corner",
+            "heavy": true,
+            "cpp": false
+        },
+        "time_static": null,
+        "time_dynamic": null
+    },
+    {
+        "name": "Py_Medium_P8_center",
+        "config": {
+            "name": "Py_Medium_P8_center",
+            "rows": 500,
+            "cols": 500,
+            "steps": 150,
+            "procs": 8,
+            "fire_pos": "center",
+            "heavy": true,
+            "cpp": false
+        },
+        "time_static": 3.762829542160034,
+        "time_dynamic": 3.846968650817871
+    },
+    {
+        "name": "Py_Medium_P8_top",
+        "config": {
+            "name": "Py_Medium_P8_top",
+            "rows": 500,
+            "cols": 500,
+            "steps": 150,
+            "procs": 8,
+            "fire_pos": "top",
+            "heavy": true,
+            "cpp": false
+        },
+        "time_static": 3.8718478679656982,
+        "time_dynamic": 3.8776426315307617
+    },
+    {
+        "name": "Py_Medium_P8_corner",
+        "config": {
+            "name": "Py_Medium_P8_corner",
+            "rows": 500,
+            "cols": 500,
+            "steps": 150,
+            "procs": 8,
+            "fire_pos": "corner",
+            "heavy": true,
+            "cpp": false
+        },
+        "time_static": null,
+        "time_dynamic": null
+    },
+    {
+        "name": "Py_Large_P2_center",
+        "config": {
+            "name": "Py_Large_P2_center",
+            "rows": 1000,
+            "cols": 1000,
+            "steps": 200,
+            "procs": 2,
+            "fire_pos": "center",
+            "heavy": true,
+            "cpp": false
+        },
+        "time_static": 53.88946580886841,
+        "time_dynamic": 54.17436122894287
+    },
+    {
+        "name": "Py_Large_P2_top",
+        "config": {
+            "name": "Py_Large_P2_top",
+            "rows": 1000,
+            "cols": 1000,
+            "steps": 200,
+            "procs": 2,
+            "fire_pos": "top",
+            "heavy": true,
+            "cpp": false
+        },
+        "time_static": 52.80960297584534,
+        "time_dynamic": 53.644428968429565
+    },
+    {
+        "name": "Py_Large_P2_corner",
+        "config": {
+            "name": "Py_Large_P2_corner",
+            "rows": 1000,
+            "cols": 1000,
+            "steps": 200,
+            "procs": 2,
+            "fire_pos": "corner",
+            "heavy": true,
+            "cpp": false
+        },
+        "time_static": null,
+        "time_dynamic": null
+    },
+    {
+        "name": "Py_Large_P4_center",
+        "config": {
+            "name": "Py_Large_P4_center",
+            "rows": 1000,
+            "cols": 1000,
+            "steps": 200,
+            "procs": 4,
+            "fire_pos": "center",
+            "heavy": true,
+            "cpp": false
+        },
+        "time_static": 27.423532962799072,
+        "time_dynamic": 27.38110041618347
+    },
+    {
+        "name": "Py_Large_P4_top",
+        "config": {
+            "name": "Py_Large_P4_top",
+            "rows": 1000,
+            "cols": 1000,
+            "steps": 200,
+            "procs": 4,
+            "fire_pos": "top",
+            "heavy": true,
+            "cpp": false
+        },
+        "time_static": 27.526347398757935,
+        "time_dynamic": 27.508084058761597
+    },
+    {
+        "name": "Py_Large_P4_corner",
+        "config": {
+            "name": "Py_Large_P4_corner",
+            "rows": 1000,
+            "cols": 1000,
+            "steps": 200,
+            "procs": 4,
+            "fire_pos": "corner",
+            "heavy": true,
+            "cpp": false
+        },
+        "time_static": null,
+        "time_dynamic": null
+    },
+    {
+        "name": "Py_Large_P8_center",
+        "config": {
+            "name": "Py_Large_P8_center",
+            "rows": 1000,
+            "cols": 1000,
+            "steps": 200,
+            "procs": 8,
+            "fire_pos": "center",
+            "heavy": true,
+            "cpp": false
+        },
+        "time_static": 14.55516791343689,
+        "time_dynamic": 14.719839096069336
+    },
+    {
+        "name": "Py_Large_P8_top",
+        "config": {
+            "name": "Py_Large_P8_top",
+            "rows": 1000,
+            "cols": 1000,
+            "steps": 200,
+            "procs": 8,
+            "fire_pos": "top",
+            "heavy": true,
+            "cpp": false
+        },
+        "time_static": 14.608559608459473,
+        "time_dynamic": 14.589109659194946
+    },
+    {
+        "name": "Py_Large_P8_corner",
+        "config": {
+            "name": "Py_Large_P8_corner",
+            "rows": 1000,
+            "cols": 1000,
+            "steps": 200,
+            "procs": 8,
+            "fire_pos": "corner",
+            "heavy": true,
+            "cpp": false
+        },
+        "time_static": null,
+        "time_dynamic": null
+    },
+    {
+        "name": "Cpp_Large_P4_top_Fixed",
+        "config": {
+            "name": "Cpp_Large_P4_top_Fixed",
+            "rows": 1000,
+            "cols": 1000,
+            "steps": 200,
+            "procs": 4,
+            "fire_pos": "top",
+            "heavy": true,
+            "cpp": true
+        },
+        "time_static": 2.1358041763305664,
+        "time_dynamic": 1.7797327041625977
+    }
+]

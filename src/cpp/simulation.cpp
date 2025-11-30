@@ -39,7 +39,33 @@ void set_fire(Grid& grid, int r, int c) {
     }
 }
 
-void update_grid(Grid& grid, Grid& next_grid, int rank, int size, bool heavy_load) {
+void exchange_ghost_cells(Grid& grid, std::vector<int>& top_ghost, std::vector<int>& bottom_ghost, int rank, int size) {
+    int top_rank = rank - 1;
+    int bottom_rank = rank + 1;
+    int cols = grid.cols;
+    int tag = 0;
+
+    // Exchange with Top
+    if (top_rank >= 0) {
+        MPI_Sendrecv(grid.data.data(), cols, MPI_INT, top_rank, tag,
+                     top_ghost.data(), cols, MPI_INT, top_rank, tag,
+                     MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    } else {
+        std::fill(top_ghost.begin(), top_ghost.end(), FUEL); // Boundary condition
+    }
+
+    // Exchange with Bottom
+    if (bottom_rank < size) {
+        // Send my last row, receive into bottom_ghost
+        MPI_Sendrecv(grid.data.data() + (grid.rows - 1) * cols, cols, MPI_INT, bottom_rank, tag,
+                     bottom_ghost.data(), cols, MPI_INT, bottom_rank, tag,
+                     MPI_COMM_WORLD, MPI_STATUS_IGNORE);
+    } else {
+        std::fill(bottom_ghost.begin(), bottom_ghost.end(), FUEL); // Boundary condition
+    }
+}
+
+void update_grid(Grid& grid, Grid& next_grid, int rank, int size, bool heavy_load, const std::vector<int>& top_ghost, const std::vector<int>& bottom_ghost) {
     int burning_count = 0;
     
     for (int r = 0; r < grid.rows; ++r) {
@@ -49,18 +75,41 @@ void update_grid(Grid& grid, Grid& next_grid, int rank, int size, bool heavy_loa
                 next_grid.at(r, c) = BURNT;
                 burning_count++;
                 
+                // Spread to neighbors
                 if (c + 1 < grid.cols && grid.at(r, c+1) == FUEL) next_grid.at(r, c+1) = BURNING;
                 if (c - 1 >= 0 && grid.at(r, c-1) == FUEL) next_grid.at(r, c-1) = BURNING;
-                if (r + 1 < grid.rows && grid.at(r+1, c) == FUEL) next_grid.at(r+1, c) = BURNING;
-                if (r - 1 >= 0 && grid.at(r-1, c) == FUEL) next_grid.at(r-1, c) = BURNING;
+                
+                // Down
+                if (r + 1 < grid.rows) {
+                    if (grid.at(r+1, c) == FUEL) next_grid.at(r+1, c) = BURNING;
+                } 
+                // Up
+                if (r - 1 >= 0) {
+                    if (grid.at(r-1, c) == FUEL) next_grid.at(r-1, c) = BURNING;
+                }
             } else if (state == BURNT) {
                 next_grid.at(r, c) = BURNT;
             } else {
+
                 if (next_grid.at(r, c) != BURNING) next_grid.at(r, c) = FUEL;
             }
         }
     }
     
+    // Handle Ghost Cell Spreading (Pull from Ghost)
+    // Top Row (r=0) checks Top Ghost
+    for (int c = 0; c < grid.cols; ++c) {
+        if (grid.at(0, c) == FUEL && top_ghost[c] == BURNING) {
+            next_grid.at(0, c) = BURNING;
+        }
+    }
+    // Bottom Row (r=rows-1) checks Bottom Ghost
+    for (int c = 0; c < grid.cols; ++c) {
+        if (grid.at(grid.rows - 1, c) == FUEL && bottom_ghost[c] == BURNING) {
+            next_grid.at(grid.rows - 1, c) = BURNING;
+        }
+    }
+
     if (heavy_load && burning_count > 0) {
         auto start = std::chrono::high_resolution_clock::now();
         auto target = start + std::chrono::microseconds(static_cast<long long>(burning_count * 50));
@@ -103,10 +152,15 @@ int main(int argc, char** argv) {
 
     Grid grid(local_rows, cols);
     Grid next_grid(local_rows, cols);
+    
+    std::vector<int> top_ghost(cols, FUEL);
+    std::vector<int> bottom_ghost(cols, FUEL);
 
     // Init Fire
     if (fire_pos == "top") {
         if (rank == 0) set_fire(grid, 0, cols / 2);
+    } else if (fire_pos == "corner") {
+        if (rank == 0) set_fire(grid, 0, 0);
     } else if (fire_pos == "center") {
          int global_center = rows / 2;
          if (offset <= global_center && global_center < offset + local_rows) {
@@ -118,7 +172,8 @@ int main(int argc, char** argv) {
     double start_time = MPI_Wtime();
 
     for (int step = 0; step < steps; ++step) {
-        update_grid(grid, next_grid, rank, size, heavy);
+        exchange_ghost_cells(grid, top_ghost, bottom_ghost, rank, size);
+        update_grid(grid, next_grid, rank, size, heavy, top_ghost, bottom_ghost);
         
         // Aggressive: Balance every 5 steps
         if (balance && step % 5 == 0) {

@@ -2,24 +2,13 @@ import subprocess
 import time
 import json
 import os
+import argparse
 import matplotlib.pyplot as plt
 
-EXPERIMENTS = [
-    {"name": "Small", "rows": 100, "cols": 100, "steps": 50, "procs": 2, "fire_pos": "center"},
-    {"name": "Medium", "rows": 500, "cols": 500, "steps": 100, "procs": 4, "fire_pos": "center"},
-    {"name": "Large", "rows": 1000, "cols": 1000, "steps": 200, "procs": 4, "fire_pos": "center"},
-    {"name": "Uneven_Top", "rows": 1000, "cols": 1000, "steps": 200, "procs": 4, "fire_pos": "top"},
-    {"name": "Heavy_Uneven", "rows": 1000, "cols": 1000, "steps": 200, "procs": 4, "fire_pos": "top", "heavy": True},
-    {"name": "Super_Heavy_Optimized", "rows": 1000, "cols": 1000, "steps": 200, "procs": 4, "fire_pos": "top", "heavy": True, "balance_freq": 20},
-    {"name": "CPP_Comparison", "rows": 1000, "cols": 1000, "steps": 200, "procs": 4, "fire_pos": "top", "heavy": True, "cpp": True},
-    {"name": "CPP_Center", "rows": 1000, "cols": 1000, "steps": 200, "procs": 4, "fire_pos": "center", "heavy": True, "cpp": True},
-    {"name": "Long_CPP", "rows": 1000, "cols": 1000, "steps": 500, "procs": 4, "fire_pos": "top", "heavy": True, "cpp": True}
-]
-
-RESULTS_FILE = "results/experiment_results.json"
+RESULTS_FILE = "results/final_results.json"
 
 def run_simulation(name, rows, cols, steps, procs, fire_pos, heavy=False, balance_freq=10, balance=True, cpp=False):
-    print(f"Running {name} experiment ({rows}x{cols}, {steps} steps, {procs} procs, Pos={fire_pos}, Heavy={heavy}, Freq={balance_freq}, Balance={balance}, CPP={cpp})...")
+    print(f"Running {name} ({rows}x{cols}, {steps} steps, {procs} procs, Pos={fire_pos}, CPP={cpp})...")
     
     if cpp:
         cmd = [
@@ -43,10 +32,6 @@ def run_simulation(name, rows, cols, steps, procs, fire_pos, heavy=False, balanc
         if balance:
             cmd.append("--balance")
     
-    # Save logs for the largest run to visualize later
-    if name == "Large":
-        cmd.append("--save")
-
     start_time = time.time()
     try:
         subprocess.run(cmd, check=True, capture_output=True)
@@ -59,22 +44,65 @@ def run_simulation(name, rows, cols, steps, procs, fire_pos, heavy=False, balanc
     print(f"  -> Finished in {duration:.4f}s")
     return duration
 
+def generate_suite(suite_type):
+    experiments = []
+    
+    sizes = [
+        {"label": "Small", "rows": 200, "cols": 200, "steps": 100},
+        {"label": "Medium", "rows": 500, "cols": 500, "steps": 150},
+        {"label": "Large", "rows": 1000, "cols": 1000, "steps": 200}
+    ]
+    
+    procs_list = [2, 4, 8]
+    positions = ["center", "top", "corner"]
+    
+    for size in sizes:
+        for procs in procs_list:
+            for pos in positions:
+                # Construct name
+                base_name = f"{suite_type}_{size['label']}_P{procs}_{pos}"
+                
+                exp = {
+                    "name": base_name,
+                    "rows": size["rows"],
+                    "cols": size["cols"],
+                    "steps": size["steps"],
+                    "procs": procs,
+                    "fire_pos": pos,
+                    "heavy": True, # Always heavy for meaningful results
+                    "cpp": (suite_type == "Cpp")
+                }
+                experiments.append(exp)
+    return experiments
+
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--suite", choices=["python", "cpp", "all", "test"], default="test")
+    args = parser.parse_args()
+
     if not os.path.exists("results"):
         os.makedirs("results")
 
-    results = []
+    experiments = []
+    if args.suite == "test":
+        experiments = [
+            {"name": "Cpp_Large_P4_top_Fixed", "rows": 1000, "cols": 1000, "steps": 200, "procs": 4, "fire_pos": "top", "heavy": True, "cpp": True}
+        ]
+    elif args.suite == "cpp":
+        experiments = generate_suite("Cpp")
+    elif args.suite == "python":
+        experiments = generate_suite("Py")
+    elif args.suite == "all":
+        experiments = generate_suite("Cpp") + generate_suite("Py")
 
-    for exp in EXPERIMENTS:
-        heavy = exp.get("heavy", False)
-        freq = exp.get("balance_freq", 10)
-        cpp = exp.get("cpp", False)
-        
+    results = []
+    
+    for exp in experiments:
         # Run Static
-        time_static = run_simulation(exp["name"], exp["rows"], exp["cols"], exp["steps"], exp["procs"], exp["fire_pos"], heavy=heavy, balance_freq=freq, balance=False, cpp=cpp)
+        time_static = run_simulation(exp["name"] + "_Static", exp["rows"], exp["cols"], exp["steps"], exp["procs"], exp["fire_pos"], heavy=exp["heavy"], balance=False, cpp=exp["cpp"])
         
         # Run Dynamic
-        time_dynamic = run_simulation(exp["name"], exp["rows"], exp["cols"], exp["steps"], exp["procs"], exp["fire_pos"], heavy=heavy, balance_freq=freq, balance=True, cpp=cpp)
+        time_dynamic = run_simulation(exp["name"] + "_Dynamic", exp["rows"], exp["cols"], exp["steps"], exp["procs"], exp["fire_pos"], heavy=exp["heavy"], balance=True, cpp=exp["cpp"])
         
         results.append({
             "name": exp["name"],
@@ -84,32 +112,29 @@ def main():
         })
 
     # Save results
+    final_data = []
+    if os.path.exists(RESULTS_FILE):
+        try:
+            with open(RESULTS_FILE, "r") as f:
+                final_data = json.load(f)
+        except:
+            pass
+            
+    # Update or append
+    for new_r in results:
+        found = False
+        for i, old_r in enumerate(final_data):
+            if old_r["name"] == new_r["name"]:
+                final_data[i] = new_r
+                found = True
+                break
+        if not found:
+            final_data.append(new_r)
+            
     with open(RESULTS_FILE, "w") as f:
-        json.dump(results, f, indent=4)
+        json.dump(final_data, f, indent=4)
     
     print(f"Results saved to {RESULTS_FILE}")
-    
-    # Plotting
-    names = [r["name"] for r in results]
-    t_static = [r["time_static"] for r in results]
-    t_dynamic = [r["time_dynamic"] for r in results]
-    
-    x = range(len(names))
-    width = 0.35
-    
-    plt.figure(figsize=(10, 6))
-    plt.bar([i - width/2 for i in x], t_static, width, label='Static')
-    plt.bar([i + width/2 for i in x], t_dynamic, width, label='Dynamic')
-    
-    plt.xlabel('Experiment Scale')
-    plt.ylabel('Execution Time (s)')
-    plt.title('Performance Comparison: Static vs Dynamic Load Balancing')
-    plt.xticks(x, names)
-    plt.legend()
-    plt.grid(axis='y')
-    
-    plt.savefig("results/experiment_plot.png")
-    print("Plot saved to results/experiment_plot.png")
 
 if __name__ == "__main__":
     main()
