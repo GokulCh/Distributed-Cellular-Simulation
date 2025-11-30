@@ -17,7 +17,7 @@ def plot_all(results):
     fig, axs = plt.subplots(2, 2, figsize=(18, 12))
     fig.suptitle('Distributed Cellular Simulation: Comprehensive Performance Analysis', fontsize=16)
 
-    # --- 1. C++ Scalability (Center Start) ---
+    # 1. C++ Scalability (Center Start)
     ax = axs[0, 0]
     sizes = ["Small", "Medium", "Large"]
     colors = ['blue', 'green', 'red']
@@ -29,9 +29,8 @@ def plot_all(results):
             cfg = r["config"]
             if cfg["cpp"] and cfg["fire_pos"] == "center" and size in cfg["name"]:
                 procs.append(cfg["procs"])
-                times.append(r["time_static"]) # Use Static as baseline
+                times.append(r["time_static"])
         
-        # Sort by procs
         if procs:
             p_t = sorted(zip(procs, times))
             procs, times = zip(*p_t)
@@ -44,7 +43,7 @@ def plot_all(results):
     ax.legend()
     ax.grid(True)
 
-    # --- 2. Python Scalability (Center Start) ---
+    # 2. Python Scalability (Center Start)
     ax = axs[0, 1]
     for i, size in enumerate(sizes):
         procs = []
@@ -67,7 +66,7 @@ def plot_all(results):
     ax.legend()
     ax.grid(True)
 
-    # --- 3. Dynamic vs Static Impact (C++ Large Grid, 4 Procs) ---
+    # 3. Dynamic vs Static Impact (C++ Large Grid, 4 Procs)
     ax = axs[1, 0]
     positions = ["center", "top", "corner"]
     static_times = []
@@ -105,19 +104,18 @@ def plot_all(results):
             color = 'green' if speedup > 0 else 'red'
             ax.text(i, max(s, d) + 0.1, f"{speedup:+.1f}%", ha='center', color=color, fontweight='bold')
 
-    # --- 4. Python vs C++ Comparison (Large Grid, 4 Procs, Center) ---
+    # 4. Python vs C++ Comparison (Large Grid, 4 Procs, Center)
     ax = axs[1, 1]
     
     py_time = 0
     cpp_time = 0
     
     for r in results:
-        if r["name"] == "Py_Large_P4_center_Static": # Check naming convention from script
+        if r["name"] == "Py_Large_P4_center_Static":
              py_time = r["time_static"]
-        if r["name"] == "Cpp_Large_P4_center": # Check naming convention
+        if r["name"] == "Cpp_Large_P4_center":
              cpp_time = r["time_static"]
              
-    # Fallback search if exact name match fails (due to script logic)
     if py_time == 0:
         for r in results:
             if r["config"]["name"] == "Py_Large_P4_center": py_time = r["time_static"]
@@ -127,7 +125,7 @@ def plot_all(results):
 
     langs = ['Python', 'C++']
     times = [py_time, cpp_time]
-    colors = ['#3776ab', '#00599c'] # Python Blue, C++ Blue
+    colors = ['#3776ab', '#00599c']
     
     bars = ax.bar(langs, times, color=colors)
     ax.set_title('Language Comparison (Large Grid, 4 Procs)')
